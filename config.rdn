@@ -1,0 +1,16 @@
+{
+ title: 'SDC - Self Driving Car',
+ application: {
+  name: 'SDC',
+  data: 'width=680, height=320',
+ },
+ 
+ order: [
+  'main.fx',
+  
+  'styles.css',
+  'script.mthd',
+ ],
+ 
+ description: 'This is a Self Driving Car Program made in my scripting language, Ruin.',
+}

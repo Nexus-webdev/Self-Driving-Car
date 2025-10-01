@@ -1,0 +1,21 @@
+listener('resize', resize, window);
+const { Light } import `Sprout.Lights`;
+const { Game, Point } import `Sprout`;
+(new Light('fullscreen')).append();
+
+Game.initialize(30, model => {
+ with(model) {
+  ctx.beginPath();
+  ctx.stroke();
+  ctx.fill();
+ }
+});
+
+resize();
+win(Game);
+
+Game.start();
+function resize() {
+ Game.board.width = innerWidth;
+ Game.board.height = innerHeight;
+};
