@@ -1,0 +1,168 @@
+const Controls import `lib.Controls`;
+struct('Car', {
+ construct({ x = 0, y = 0, width = 30, height = 50, controlType = 'DUMMY', maxSpeed = 3, acceleration = .18 } = {}) {
+  def x = x;
+  def y = y;
+  def width = width;
+  def height = height;
+  
+  def speed = 0;
+  def acceleration = acceleration;
+  def maxSpeed = maxSpeed;
+  def friction = .05;
+  
+  def angle = 0;
+  def damaged = false;
+
+  def useBrain = controlType == 'AI';
+  if (controlType != 'DUMMY') {
+   def sensor = new Sensor(this, { length: 200 });
+   def brain = new NeuralNetwork([this.sensor.ray.count, 6, 6, 4]);
+  }
+
+  def controls = new Controls(controlType);
+ },
+ 
+ update(roadBorders, traffic) {
+  if (this.damaged) return;
+  
+  with(this) {
+   def polygon = createPolygon();
+   def damaged = assessDamage(roadBorders, traffic);
+   
+   if (this.sensor)
+   {
+    sensor.update(trafficHandler(roadBorders, traffic));
+    if (useBrain && brain)
+    {
+     const offsets = sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
+     const outputs = brain.feedForward(offsets);
+     brain.score = -y;
+     
+     [
+      controls.forward,
+      controls.left,
+      controls.right,
+      controls.reverse,
+     ] = outputs;
+    }
+   }
+   
+   this.$move();
+  }
+ },
+ 
+ trafficHandler(roadBorders, traffic) {
+  return([start, end]) => {
+   const touches = [];
+   for (let border of roadBorders)
+   {
+    const touch = math.getIntersection(start, end, border[0], border[1]);
+    if (touch) touches.push(touch);
+   }
+   
+   for (let vehicle of traffic)
+   {
+    const poly = vehicle.polygon;
+    if (poly) for (let j = 0; j < poly.length; j ++)
+    {
+     const touch = math.getIntersection(start, end, poly[j], poly[(j +1) % poly.length]);
+     if (touch) touches.push(touch);
+    }
+   }
+   
+   if (touches.length == 0)
+   touches.push({ x: end.x, y: end.y -1, offset: 0 });
+   
+   return touches;
+  }
+ },
+ 
+ assessDamage(roadBorders, traffic) {
+  for (let border of roadBorders)
+  if (math.polysIntersect(this.polygon, border))
+  return true;
+  
+  for (let vehicle of traffic)
+  {
+   const poly = vehicle.polygon;
+   if (poly && math.polysIntersect(this.polygon, poly))
+   return true;
+  }
+  
+  return false;
+ },
+ 
+ createPolygon() {
+  const rad = math.hypot(this.width, this.height) /2;
+  const alpha = math.atan2(this.width, this.height);
+  const x = this.x; -(this.width /2);
+  const y = this.y; -(this.height /2);
+  
+  const points = [
+   {
+    x: x -math.sin(this.angle -alpha) *rad,
+    y: y -math.cos(this.angle -alpha) *rad,
+   },
+   
+   {
+    x: x -math.sin(this.angle +alpha) *rad,
+    y: y -math.cos(this.angle +alpha) *rad,
+   },
+   
+   {
+    x: x -math.sin(math.pi +this.angle -alpha) *rad,
+    y: y -math.cos(math.pi +this.angle -alpha) *rad,
+   },
+   
+   {
+    x: x -math.sin(math.pi +this.angle +alpha) *rad,
+    y: y -math.cos(math.pi +this.angle +alpha) *rad,
+   },
+  ];
+  
+  return points;
+ },
+ 
+ $move() {
+  with(this) {
+   "log([controls.forward, controls.left, controls.right, controls.reverse])";
+   
+   if (controls.forward) def speed += acceleration;
+   else if (controls.reverse) def speed -= acceleration;
+   
+   if (speed > maxSpeed) def speed = maxSpeed;
+   if (speed < -maxSpeed /2) def speed = -maxSpeed /2;
+   
+   if (speed > 0) def speed -= friction;
+   if (speed < 0) def speed += friction;
+   
+   if (math.abs(speed) < friction) def speed = 0;
+   if (speed != 0)
+   {
+    const flip = speed > 0 ? 1 : -1;
+    if (controls.left) def angle += .03 *flip;
+    else if (controls.right) def angle -= .03 *flip;
+   }
+   
+   def x -= math.sin(angle) *speed;
+   def y -= math.cos(angle) *speed;
+  }
+ },
+ 
+ draw(ctx, color, drawSensor = false) {
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  
+  ctx.fillStyle = this.damaged ? 'black' : color;
+  ctx.strokeStyle = 'black';
+  ctx.polygon(...this.polygon);
+  
+  ctx.fill();
+  ctx.stroke();
+  if (this.sensor && this.useBrain && drawSensor)
+  this.sensor.draw(ctx);
+ },
+})
+
+module.become('Car');

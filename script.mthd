@@ -1,21 +1,173 @@
-listener('resize', resize, window);
-const { Light } import `Sprout.Lights`;
-const { Game, Point } import `Sprout`;
-(new Light('fullscreen')).append();
+listener('resize', resize);
+listener('keydown', e => {
+ if (e.key == 'm')
+ modeToggle();
+ 
+ if (e.key == ' ')
+ if (Game.gameFrame == 0) Game.start({ ls: false });
+ else Game.stop();
+})
 
-Game.initialize(30, model => {
+const { Game, FileSystem } import `Sprout`;
+const { Road, Car } import `lib`;
+const mode = Number(session.mode) || 0;
+
+await FileSystem.dir('Self-Driving-Car');
+const netBoard = Q('#netBoard');
+netBoard.width = 300;
+
+const context = netBoard.getContext('2d');
+Game.initialize(60, model => {
  with(model) {
-  ctx.beginPath();
-  ctx.stroke();
-  ctx.fill();
+  if (mode == 0) for (let vehicle of traffic)
+  vehicle.update(road.borders, []);
+  
+  for (let car of cars)
+  car.update(road.borders, traffic.filter(c => c != car));
+  getData(this).then(result => (data = result));
+  
+  best = rln.sort();
+  bestCar = cars.find(car => car.brain == best);
+  draw(ctx);
+  
+  if (gameFrame % 15 == 0)
+  logData();
+  
+  context.lineDashOffset = -gameFrame /30;
+  Visualizer.drawNetwork(context, best);
  }
 });
 
-resize();
-win(Game);
+const rln = new RLN([5, 6, 6, 4], 0);
+Game.board.height = innerHeight;
 
-Game.start();
+const road = new Road(Game.board.width /2, Game.board.width *.9);
+const cars = mode == 0 ? generateCars(5) : generateTraffic(80, 'AI');
+const traffic = mode == 0 ? generateTraffic(100) : cars;
+cars.push(new Car({
+ x: road.getLaneCenter(0),
+ y: Game.board.height /2,
+ width: 30, height: 50,
+ maxSpeed: 8,
+ controlType: 'KEYS',
+}));
+
+let best = cars[0].brain;
+let bestCar = cars[0];
+let data = await getData(Game);
+
+const file = await FileSystem.read('best.txt');
+if (file != '')
+{
+ best = RLN.parseBest(file);
+ rln.setData(best, .06);
+ 
+ for (let i = 0; i < cars.length; i ++)
+ cars[i].brain = rln.nets[i];
+}
+
+function generateTraffic(n, controlType = 'DUMMY') {
+ const traffic = [];
+ for (let i = 1; i <= n; i ++)
+ {
+  const car = new Car({
+   x: road.getLaneCenter(math.ran(0, road.laneCount)),
+   y: i == 1 && mode == 1 ? Game.board.height /2 : math.ran(-Game.board.height /3, -6500),
+   width: 30, height: 50,
+   maxSpeed: math.ran(1, 3),
+   controlType,
+  })
+  
+  if (controlType == 'AI') rln.push(car.brain);
+  traffic.push(car);
+ }
+ 
+ return traffic;
+}
+
+function generateCars(n) {
+ const cars = []
+ for (let i = 1; i <= n; i ++)
+ {
+  const car = new Car({
+   x: road.getLaneCenter(1),
+   y: Game.board.height /2,
+   width: 30, height: 50,
+   controlType: 'AI',
+   maxSpeed: 5.5,
+  });
+  
+  rln.push(car.brain);
+  cars.push(car);
+ }
+ 
+ return cars;
+}
+
+function save() {
+ FileSystem.write('best.txt', RLN.stringifyBest(rln));
+ if (data.newhighscore) FileSystem.write('high-score.txt', best.score);
+}
+
+function discard() {
+ FileSystem.write('best.txt', '');
+ FileSystem.write('high-score.txt', '0');
+}
+
+function draw(ctx) {
+ ctx.save();
+ ctx.translate(0, -bestCar.y +Game.board.height *.5);
+
+ road.draw(ctx);
+ if (mode == 0) for (let vehicle of traffic)
+ vehicle.draw(ctx, 'red');
+ 
+ ctx.globalAlpha = .2;
+ for (let car of cars.filter(car => car != bestCar))
+ car.draw(ctx, 'blue');
+ 
+ ctx.globalAlpha = 1;
+ for (let car of cars.filter(car => car.useBrain == false))
+ car.draw(ctx, 'darkblue', true);
+ 
+ bestCar.draw(ctx, 'blue', true);
+ ctx.restore();
+}
+
+function logData() {
+ terminal.clear();
+ const arr = [
+  'Cars Alive: ' +data.carsAlive,
+  'Score: ' +best.score +(data.newhighscore ? '^' : ''),
+  'Highscore: ' +data.highscore,
+ ];
+ 
+ log(arr.join('\n'));
+}
+
+function getData(model) {
+ return new Promise(async resolve => {
+  const carsAlive = cars.filter(car => !car.damaged).length;
+  const highscore = await FileSystem.read('high-score.txt');
+  
+  resolve({
+   carsAlive,
+   newhighscore: best.score > Number(highscore),
+   highscore,
+  });
+ })
+}
+
+resize();
+Game.start({ ls: false });
+win(Game, save, discard, modeToggle);
+
 function resize() {
- Game.board.width = innerWidth;
- Game.board.height = innerHeight;
-};
+ Game.board.height = window.innerHeight;
+ netBoard.height = window.innerHeight;
+}
+
+function modeToggle(i) {
+ const n = Number(session.mode) || 0;
+ session.mode = i ?? (n != 1 ? n +1 : 0);
+}

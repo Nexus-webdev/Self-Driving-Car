@@ -1,0 +1,60 @@
+struct('Controls', {
+ construct(type) {
+  def forward = false;
+  def left = false;
+  def right = false;
+  def reverse = false;
+
+  $.opt(type, {
+   default: x => x,
+   KEYS: x => this.$listeners(),
+   DUMMY: x => this.forward = true,
+  })();
+ },
+
+ $listeners() {
+  with(this) {
+   listener('keydown', e => {
+    $.opt(e.key, {
+     default: x => x,
+     ArrowLeft() {
+      def left = true;
+     },
+     
+     ArrowRight() {
+      def right = true;
+     },
+     
+     ArrowUp() {
+      def forward = true;
+     },
+     
+     ArrowDown() {
+      def reverse = true;
+     },
+    }).bind(this)();
+   })
+   
+   listener('keyup', e => {
+    $.opt(e.key, {
+     default: x => x,
+     ArrowLeft() {
+      def left = false;
+     },
+     
+     ArrowRight() {
+      def right = false;
+     },
+     
+     ArrowUp() {
+      def forward = false;
+     },
+     
+     ArrowDown() {
+      def reverse = false;
+     },
+    }).bind(this)();
+   })
+  }
+ },
+})

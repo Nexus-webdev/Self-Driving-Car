@@ -1,0 +1,51 @@
+struct('Road', {
+ construct(x, width, laneCount = 3) {
+  def x = x;
+  def width = width;
+  def laneCount = laneCount;
+  
+  const infinity = 10000;
+  def left = x -width /2;
+  def right = x +width /2;
+  def top = -infinity;
+  def bottom = infinity;
+  
+  const topLeft = { x: this.left, y: this.top };
+  const topRight = { x: this.right, y: this.top };
+  const bottomLeft = { x: this.left, y: this.bottom };
+  const bottomRight = { x: this.right, y: this.bottom };
+  this.borders = [[topLeft, bottomLeft], [topRight, bottomRight]];
+ },
+ 
+ getLaneCenter(i) {
+  const laneWidth = this.width /this.laneCount;
+  return this.left +laneWidth /2 +math.min(i, this.laneCount -1) *laneWidth;
+ },
+ 
+ draw(ctx) {
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = 'white';
+  
+  for (let i = 1; i <= this.laneCount -1; i ++)
+  {
+   const x = math.lerp(this.left, this.right, i /this.laneCount);
+   ctx.setLineDash([20, 20]);
+   ctx.beginPath();
+   
+   ctx.moveTo(x, this.top);
+   ctx.lineTo(x, this.bottom);
+   ctx.stroke();
+   
+   ctx.setLineDash([]);
+  }
+  
+  for(let border of this.borders)
+  {
+   ctx.beginPath();
+   
+   ctx.moveTo(border[0].x, border[0].y);
+   ctx.lineTo(border[1].x, border[1].y);
+   ctx.stroke();
+  }
+ },
+})
