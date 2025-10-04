@@ -3,10 +3,10 @@ listener('keydown', e => {
  if (e.key == 'm')
  modeToggle();
  
- if (e.key = 'c')
+ if (e.key == 'c')
  session.cars = prompt('How many cars for this run?', '5');
  
- if (e.key = 't')
+ if (e.key == 't')
  session.traffic = prompt('How much traffic for this run?', '100');
  
  if (e.key == ' ')
