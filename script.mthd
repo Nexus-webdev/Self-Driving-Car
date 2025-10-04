@@ -40,10 +40,12 @@ Game.initialize(60, model => {
 
 const rln = new RLN([5, 6, 6, 4], 0);
 Game.board.height = innerHeight;
+session.cars = session.cars ?? 5;
+session.traffic = session.traffic ?? 100;
 
 const road = new Road(Game.board.width /2, Game.board.width *.9);
-const cars = mode == 0 ? generateCars(5) : generateTraffic(80, 'AI');
-const traffic = mode == 0 ? generateTraffic(100) : cars;
+const cars = mode == 0 ? generateCars(session.cars) : generateTraffic(session.cars, 'AI');
+const traffic = mode == 0 ? generateTraffic(session.traffic) : cars;
 cars.push(new Car({
  x: road.getLaneCenter(0),
  y: Game.board.height /2,
@@ -68,7 +70,7 @@ if (file.content != '')
 
 function generateTraffic(n, controlType = 'DUMMY') {
  const traffic = [];
- for (let i = 1; i <= n; i ++)
+ for (let i = 1; i <= Number(n); i ++)
  {
   const car = new Car({
    x: road.getLaneCenter(math.ran(0, road.laneCount)),
@@ -87,7 +89,7 @@ function generateTraffic(n, controlType = 'DUMMY') {
 
 function generateCars(n) {
  const cars = []
- for (let i = 1; i <= n; i ++)
+ for (let i = 1; i <= Number(n}; i ++)
  {
   const car = new Car({
    x: road.getLaneCenter(1),
