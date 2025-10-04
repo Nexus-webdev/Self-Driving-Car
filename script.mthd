@@ -63,7 +63,7 @@ let best = cars[0].brain;
 let bestCar = cars[0];
 let data = await getData(Game);
 
-const file = cache['best.txt'];
+const file = cache['best'];
 if (file != '')
 {
  best = RLN.parseBest(file);
@@ -113,12 +113,12 @@ function generateCars(n) {
 
 function save() {
  cache['best.txt'] = RLN.stringifyBest(rln);
- if (data.newhighscore) cache['high-score.txt'] = best.score;
+ if (data.newhighscore) cache['high-score'] = best.score;
 }
 
 function discard() {
- cache['best.txt'] = '';
- cache['high-score.txt'] = '0';
+ cache['best'] = '';
+ cache['high-score'] = '0';
 }
 
 function draw(ctx) {
@@ -155,7 +155,7 @@ function logData() {
 function getData(model) {
  return new Promise(async resolve => {
   const carsAlive = cars.filter(car => !car.damaged).length;
-  const highscore = cache['high-score.txt'];
+  const highscore = cache['high-score'];
   
   resolve({
    carsAlive,
