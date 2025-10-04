@@ -4,13 +4,13 @@ listener('keydown', e => {
  modeToggle();
  
  if (e.key == 'c')
- session.cars = prompt('Set the population size', '5');
+ session.cars = prompt('Set the population size', session.cars);
  
  if (e.key == 't')
- session.traffic = prompt('Set the amount of traffic', '100');
+ session.traffic = prompt('Set the amount of traffic', session.traffic);
  
  if (e.key == 'm')
- session.mutation = prompt('Set the rate of mutation', '.06');
+ session.mutation = prompt('Set the rate of mutation', session.mutation);
  
  if (e.key == ' ')
  if (Game.gameFrame == 0) Game.start({ ls: false });
