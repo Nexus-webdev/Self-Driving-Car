@@ -4,10 +4,13 @@ listener('keydown', e => {
  modeToggle();
  
  if (e.key == 'c')
- session.cars = prompt('How many cars for this run?', '5');
+ session.cars = prompt('Set the population size', '5');
  
  if (e.key == 't')
- session.traffic = prompt('How much traffic for this run?', '100');
+ session.traffic = prompt('Set the amount of traffic', '100');
+ 
+ if (e.key == 'm')
+ session.mutation = prompt('Set the rate of mutation', '.06');
  
  if (e.key == ' ')
  if (Game.gameFrame == 0) Game.start({ ls: false });
@@ -48,6 +51,7 @@ Game.board.height = innerHeight;
 
 session.cars = session.cars ?? 5;
 session.traffic = session.traffic ?? 100;
+session.mutation = session.mutation ?? .06;
 cache['best'] = cache['best'] ?? '';
 cache['high-score'] = cache['high-score'] ?? '0';
 
@@ -71,7 +75,7 @@ const file = cache['best'];
 if (file != '')
 {
  best = RLN.parseBest(file);
- rln.setData(best, .06);
+ rln.setData(best, Number(session.mutation));
  
  for (let i = 0; i < cars.length; i ++)
  cars[i].brain = rln.nets[i];
