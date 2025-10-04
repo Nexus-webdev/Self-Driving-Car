@@ -89,7 +89,7 @@ function generateTraffic(n, controlType = 'DUMMY') {
 
 function generateCars(n) {
  const cars = []
- for (let i = 1; i <= Number(n}; i ++)
+ for (let i = 1; i <= Number(n); i ++)
  {
   const car = new Car({
    x: road.getLaneCenter(1),
