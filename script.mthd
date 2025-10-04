@@ -57,9 +57,9 @@ let bestCar = cars[0];
 let data = await getData(Game);
 
 const file = await GitHub.read('best.txt');
-if (file != '')
+if (file.content != '')
 {
- best = RLN.parseBest(file);
+ best = RLN.parseBest(file.content);
  rln.setData(best, .06);
  
  for (let i = 0; i < cars.length; i ++)
@@ -148,7 +148,7 @@ function logData() {
 function getData(model) {
  return new Promise(async resolve => {
   const carsAlive = cars.filter(car => !car.damaged).length;
-  const highscore = await GitHub.read('high-score.txt');
+  const highscore = (await GitHub.read('high-score.txt')).content;
   
   resolve({
    carsAlive,
