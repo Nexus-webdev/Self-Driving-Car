@@ -8,10 +8,11 @@ listener('keydown', e => {
  else Game.stop();
 })
 
-const { Game, FileSystem } import `Sprout`;
+const { Game } import `Sprout`;
 const { Road, Car } import `lib`;
 const mode = Number(session.mode) || 0;
 
+GitHub.repo('nexus-webdev', 'Self-Driving-Car');
 const netBoard = Q('#netBoard');
 netBoard.width = 300;
 
@@ -55,7 +56,7 @@ let best = cars[0].brain;
 let bestCar = cars[0];
 let data = await getData(Game);
 
-const file = await FileSystem.read('best.txt');
+const file = await GitHub.read('best.txt');
 if (file != '')
 {
  best = RLN.parseBest(file);
@@ -104,13 +105,13 @@ function generateCars(n) {
 }
 
 function save() {
- FileSystem.write('best.txt', RLN.stringifyBest(rln));
- if (data.newhighscore) FileSystem.write('high-score.txt', best.score);
+ GitHub.write('best.txt', RLN.stringifyBest(rln));
+ if (data.newhighscore) GitHub.write('high-score.txt', best.score);
 }
 
 function discard() {
- FileSystem.write('best.txt', '');
- FileSystem.write('high-score.txt', '0');
+ GitHub.write('best.txt', '');
+ GitHub.write('high-score.txt', '0');
 }
 
 function draw(ctx) {
@@ -147,7 +148,7 @@ function logData() {
 function getData(model) {
  return new Promise(async resolve => {
   const carsAlive = cars.filter(car => !car.damaged).length;
-  const highscore = await FileSystem.read('high-score.txt');
+  const highscore = await GitHub.read('high-score.txt');
   
   resolve({
    carsAlive,
