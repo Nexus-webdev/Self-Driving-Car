@@ -1,7 +1,7 @@
 listener('resize', resize);
 listener('keydown', e => {
- if (e.key == 'm')
- modeToggle();
+ if (e.key == 'M')
+ session.mode = prompt('Set the mode number', session.mode);
  
  if (e.key == 'c')
  session.cars = prompt('Set the population size', session.cars);
@@ -175,14 +175,9 @@ function getData(model) {
 
 resize();
 Game.start({ ls: false });
-win(Game, save, discard, modeToggle);
+win(Game, save, discard, rln);
 
 function resize() {
  Game.board.height = window.innerHeight;
  netBoard.height = window.innerHeight;
-}
-
-function modeToggle(i) {
- const n = Number(session.mode) || 0;
- session.mode = i ?? (n != 1 ? n +1 : 0);
 }
