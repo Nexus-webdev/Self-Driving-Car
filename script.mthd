@@ -45,8 +45,12 @@ Game.initialize(60, model => {
 
 const rln = new RLN([5, 6, 6, 4], 0);
 Game.board.height = innerHeight;
+
 session.cars = session.cars ?? 5;
 session.traffic = session.traffic ?? 100;
+cache['best'] = cache['best'] ?? '';
+cache['high-score'] = cache['high-score'] ?? '0';
+
 
 const road = new Road(Game.board.width /2, Game.board.width *.9);
 const cars = mode == 0 ? generateCars(session.cars) : generateTraffic(session.cars, 'AI');
