@@ -120,7 +120,7 @@ function generateCars(n) {
 }
 
 function save() {
- cache['best'] = RLN.stringifyBest(rln);
+ cache['best'] = RLN.stringifyBest(rln.nets[0]);
  if (data.newhighscore) cache['high-score'] = best.score;
 }
 
