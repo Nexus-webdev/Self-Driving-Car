@@ -74,7 +74,7 @@ let data = await getData(Game);
 
 if (file != '')
 {
- best = RLN.parseBest(file);
+ [best] = RLN.parse(file);
  rln.setData([best], Number(session.mutation));
  
  for (let i = 0; i < cars.length; i ++)
@@ -120,7 +120,7 @@ function generateCars(n) {
 }
 
 function save() {
- cache['best'] = RLN.stringifyBest(rln.nets[0]);
+ cache['best'] = RLN.stringify([rln.nets[0]]);
  if (data.newhighscore) cache['high-score'] = best.score;
 }
 
