@@ -1,4 +1,13 @@
 listener('resize', resize);
+session.cars = session.cars ?? 5;
+session.traffic = session.traffic ?? 100;
+session.mutation = session.mutation ?? .06;
+cache['best'] = cache['best'] ?? '';
+cache['high-score'] = cache['high-score'] ?? '0';
+
+const mode = Number(session.mode) || 0;
+const file = cache['best'];
+
 listener('keydown', e => {
  if (e.key == 'M')
  session.mode = prompt('Set the mode number', session.mode);
@@ -19,7 +28,6 @@ listener('keydown', e => {
 
 const { Game } import `Sprout`;
 const { Road, Car } import `lib`;
-const mode = Number(session.mode) || 0;
 
 const netBoard = Q('#netBoard');
 netBoard.width = 300;
@@ -49,13 +57,6 @@ Game.initialize(60, model => {
 const rln = new RLN([5, 6, 6, 4], 0);
 Game.board.height = innerHeight;
 
-session.cars = session.cars ?? 5;
-session.traffic = session.traffic ?? 100;
-session.mutation = session.mutation ?? .06;
-cache['best'] = cache['best'] ?? '';
-cache['high-score'] = cache['high-score'] ?? '0';
-
-
 const road = new Road(Game.board.width /2, Game.board.width *.9);
 const cars = mode == 0 ? generateCars(session.cars) : generateTraffic(session.cars, 'AI');
 const traffic = mode == 0 ? generateTraffic(session.traffic) : cars;
@@ -71,11 +72,10 @@ let best = cars[0].brain;
 let bestCar = cars[0];
 let data = await getData(Game);
 
-const file = cache['best'];
 if (file != '')
 {
  best = RLN.parseBest(file);
- rln.setData(best, Number(session.mutation));
+ rln.setData([best], Number(session.mutation));
  
  for (let i = 0; i < cars.length; i ++)
  cars[i].brain = rln.nets[i];
