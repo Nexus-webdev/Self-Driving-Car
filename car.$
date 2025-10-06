@@ -174,7 +174,7 @@ struct('Car', {
   
   ctx.fill();
   ctx.stroke();
-  if (this.sensor && this.useBrain && drawSensor)
+  if (this.sensor && drawSensor)
   this.sensor.draw(ctx);
  },
 })
