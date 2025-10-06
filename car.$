@@ -15,7 +15,8 @@ struct('Car', {
   def damaged = false;
 
   def useBrain = controlType == 'AI';
-  if (controlType != 'DUMMY') {
+  if (controlType != 'DUMMY')
+  {
    def sensor = new Sensor(this, { length: 200 });
    def brain = new NeuralNetwork([this.sensor.ray.count, 6, 6, 4]);
   }
@@ -23,7 +24,7 @@ struct('Car', {
   def controls = new Controls(controlType);
  },
  
- update(roadBorders, traffic) {
+ update(roadBorders, traffic, teacher) {
   if (this.damaged) return;
   
   with(this) {
@@ -35,16 +36,29 @@ struct('Car', {
     sensor.update(trafficHandler(roadBorders, traffic));
     if (useBrain && brain)
     {
-     const offsets = sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
-     const outputs = brain.feedForward(offsets);
-     brain.score = -y;
-     
-     [
-      controls.forward,
-      controls.left,
-      controls.right,
-      controls.reverse,
-     ] = outputs;
+     if (!teacher)
+     {
+      const offsets = sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
+      const outputs = brain.feedForward(offsets);
+      brain.score = -y;
+      
+      [
+       controls.forward,
+       controls.left,
+       controls.right,
+       controls.reverse,
+      ] = outputs;
+     } else {
+      const offsets = teacher.sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
+      const targets = [
+       teacher.controls.forward,
+       teacher.controls.left,
+       teacher.controls.right,
+       teacher.controls.reverse,
+      ];
+      
+      brain.backpropagation(offsets, targets);
+     }
     }
    }
    
