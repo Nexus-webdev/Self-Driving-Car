@@ -58,8 +58,8 @@ const rln = new RLN([5, 6, 6, 4], 0);
 Game.board.height = innerHeight;
 
 const road = new Road(Game.board.width /2, Game.board.width *.9);
-const cars = mode == 0 || mode == 2 ? generateCars(session.cars) : generateTraffic(session.cars, 'AI');
-const traffic = mode == 0 || mode == 2 ? generateTraffic(session.traffic) : cars;
+const cars = mode == 1 ? generateTraffic(session.cars, 'AI') : generateCars(session.cars);
+const traffic = mode == 1 ? cars : generateTraffic(session.traffic);
 cars.push(new Car({
  x: road.getLaneCenter(0),
  y: Game.board.height /2,
@@ -77,7 +77,6 @@ if (file != '')
 {
  [best] = RLN.parse(file);
  rln.setData([best], Number(session.mutation));
- log(rln.nets[0]);
  
  for (let i = 0; i < cars.length; i ++)
  cars[i].brain = rln.nets[i];
@@ -178,6 +177,7 @@ function getData(model) {
 resize();
 Game.run({ ls: false });
 win(Game, save, discard, rln);
+log(best);
 
 function resize() {
  Game.board.height = window.innerHeight;
