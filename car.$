@@ -57,7 +57,7 @@ struct('Car', {
        teacher.controls.reverse,
       ];
       
-      brain.backpropagation(offsets, targets);
+      brain.backpropagate(offsets, targets);
      }
     }
    }
