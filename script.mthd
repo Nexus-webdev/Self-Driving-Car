@@ -35,7 +35,7 @@ netBoard.width = 300;
 const context = netBoard.getContext('2d');
 Game.initialize(60, model => {
  with(model) {
-  if (mode == 0) for (let vehicle of traffic)
+  for (let vehicle of traffic)
   vehicle.update(road.borders, [], null);
   
   for (let car of cars)
@@ -49,8 +49,11 @@ Game.initialize(60, model => {
   if (gameFrame % 15 == 0)
   logData();
   
-  context.lineDashOffset = -gameFrame /100;
-  Visualizer.drawNetwork(context, best);
+  if (mode == 1) Visualizer.drawLossGraph(context, bestCar.losses);
+  else {
+   context.lineDashOffset = -gameFrame /30;
+   Visualizer.drawNetwork(context, best);
+  }
  }
 });
 

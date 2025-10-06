@@ -5,6 +5,7 @@ struct('Car', {
   def y = y;
   def width = width;
   def height = height;
+  def losses = [];
   
   def speed = 0;
   def acceleration = acceleration;
@@ -57,7 +58,7 @@ struct('Car', {
        teacher.controls.reverse,
       ];
       
-      brain.backpropagate(offsets, targets);
+      this.losses.push(brain.backpropagate(offsets, targets).mse);
      }
     }
    }
