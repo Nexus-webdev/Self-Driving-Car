@@ -77,6 +77,7 @@ if (file != '')
 {
  [best] = RLN.parse(file);
  rln.setData([best], Number(session.mutation));
+ log(rln.nets[0]);
  
  for (let i = 0; i < cars.length; i ++)
  cars[i].brain = rln.nets[i];
