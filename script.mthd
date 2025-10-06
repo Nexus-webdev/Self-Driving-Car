@@ -174,7 +174,6 @@ function getData(model) {
 }
 
 resize();
-Game.start({ ls: false });
 win(Game, save, discard, rln);
 
 function resize() {
