@@ -1,14 +1,14 @@
 struct('Controls', {
  construct(type) {
-  def forward = false;
-  def left = false;
-  def right = false;
-  def reverse = false;
+  def forward = 0;
+  def left = 0;
+  def right = 0;
+  def reverse = 0;
 
   $.opt(type, {
    default: x => x,
    KEYS: x => this.$listeners(),
-   DUMMY: x => this.forward = true,
+   DUMMY: x => this.forward = 1,
   })();
  },
 
@@ -18,19 +18,19 @@ struct('Controls', {
     $.opt(e.key, {
      default: x => x,
      ArrowLeft() {
-      def left = true;
+      def left = 1;
      },
      
      ArrowRight() {
-      def right = true;
+      def right = 1;
      },
      
      ArrowUp() {
-      def forward = true;
+      def forward = 1;
      },
      
      ArrowDown() {
-      def reverse = true;
+      def reverse = 1;
      },
     }).bind(this)();
    })
@@ -39,19 +39,19 @@ struct('Controls', {
     $.opt(e.key, {
      default: x => x,
      ArrowLeft() {
-      def left = false;
+      def left = 0;
      },
      
      ArrowRight() {
-      def right = false;
+      def right = 0;
      },
      
      ArrowUp() {
-      def forward = false;
+      def forward = 0;
      },
      
      ArrowDown() {
-      def reverse = false;
+      def reverse = 0;
      },
     }).bind(this)();
    })
