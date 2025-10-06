@@ -61,7 +61,7 @@ const rln = new RLN([5, 6, 6, 4], 0);
 Game.board.height = innerHeight;
 
 const road = new Road(Game.board.width /2, Game.board.width *.9);
-const cars = generateCars(session.cars);
+const cars = generateCars(mode == 1 ? session.cars : 1);
 const traffic = generateTraffic(session.traffic);
 cars.push(new Car({
  x: road.getLaneCenter(0),

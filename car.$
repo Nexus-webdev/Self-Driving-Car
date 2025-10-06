@@ -37,8 +37,19 @@ struct('Car', {
     sensor.update(trafficHandler(roadBorders, traffic));
     if (useBrain && brain)
     {
-     if (!teacher)
+     if (teacher)
      {
+      const offsets = teacher.sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
+      const targets = [
+       teacher.controls.forward,
+       teacher.controls.left,
+       teacher.controls.right,
+       teacher.controls.reverse,
+      ];
+      
+      const outputs = brain.backpropagate(offsets, targets);
+      this.losses.push(outputs.mse); log(outputs.mse);
+     } else {
       const offsets = sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
       const outputs = brain.feedForward(offsets);
       brain.score = -y;
@@ -49,16 +60,6 @@ struct('Car', {
        controls.right,
        controls.reverse,
       ] = outputs;
-     } else {
-      const offsets = teacher.sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
-      const targets = [
-       teacher.controls.forward,
-       teacher.controls.left,
-       teacher.controls.right,
-       teacher.controls.reverse,
-      ];
-      
-      this.losses.push(brain.backpropagate(offsets, targets).mse);
      }
     }
    }
