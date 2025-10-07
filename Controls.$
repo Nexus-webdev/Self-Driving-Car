@@ -1,9 +1,9 @@
 struct('Controls', {
  construct(type) {
-  def forward = 0;
-  def left = 0;
-  def right = 0;
-  def reverse = 0;
+  def forward = 1;
+  def left = 1;
+  def right = 1;
+  def reverse = 1;
 
   $.opt(type, {
    default: x => x,
