@@ -49,6 +49,7 @@ Game.initialize(60, model => {
   if (gameFrame % 15 == 0)
   logData();
   
+  context.clearRect(0, 0, netBoard.width, netBoard.height);
   if (mode == 1) Visualizer.drawLossGraph(context, bestCar.losses);
   else {
    context.lineDashOffset = -gameFrame /30;
