@@ -47,8 +47,11 @@ struct('Car', {
        teacher.controls.reverse,
       ];
       
-      const outputs = brain.backpropagate(offsets, targets);
-      this.losses.push(brain.mse([{ inputs: offsets, targets }]));
+      if (targets.find(t => t != 0))
+      {
+       const outputs = brain.backpropagate(offsets, targets);
+       this.losses.push(brain.mse([{ inputs: offsets, targets }]));
+      }
      } else {
       const offsets = sensor.readings.map(s => s == null ? 0 : 1 -s.offset);
       const outputs = brain.feedForward(offsets);
