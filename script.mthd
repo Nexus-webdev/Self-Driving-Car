@@ -139,7 +139,7 @@ function draw(ctx) {
  ctx.translate(0, -(mode == 1 ? teacher.y : bestCar.y) +Game.board.height *.5);
 
  road.draw(ctx);
- if (mode == 0) for (let vehicle of traffic)
+ for (let vehicle of traffic)
  vehicle.draw(ctx, 'red');
  
  ctx.globalAlpha = .2;

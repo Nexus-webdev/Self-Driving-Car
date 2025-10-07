@@ -49,7 +49,7 @@ struct('Car', {
       
       if (targets.find(t => t != 0))
       {
-       const outputs = brain.backpropagate(offsets, targets);
+       const outputs = brain.backpropagate(offsets, targets, .004);
        this.losses.push(brain.mse([{ inputs: offsets, targets }]));
       }
      } else {
