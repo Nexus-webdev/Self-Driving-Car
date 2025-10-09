@@ -1,4 +1,8 @@
 const Controls import `lib.Controls`;
+
+const image = new Img();
+image.src = 'https://nexus-webdev.github.io/Self-Driving-Car/carImage.png';
+
 struct('Car', {
  construct({ x = 0, y = 0, width = 30, height = 50, controlType = 'DUMMY', maxSpeed = 3, acceleration = .18 } = {}) {
   def x = x;
@@ -170,17 +174,13 @@ struct('Car', {
  },
  
  draw(ctx, color, drawSensor = false) {
-  ctx.beginPath();
-  ctx.lineWidth = 1;
-  
-  ctx.fillStyle = this.damaged ? 'black' : color;
-  ctx.strokeStyle = 'black';
-  ctx.polygon(...this.polygon);
-  
-  ctx.fill();
-  ctx.stroke();
   if (this.sensor && drawSensor)
   this.sensor.draw(ctx);
+  
+  ctx.mapImage(image, this.polygon, (context, w, h) => {
+   context.fillStyle = this.damaged ? 'black' : color;
+   context.fillRect(2, 2, w -2, h -2);
+  })
  },
 })
 
