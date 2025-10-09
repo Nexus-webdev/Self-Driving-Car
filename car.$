@@ -118,9 +118,9 @@ struct('Car', {
  
  createPolygon() {
   const rad = math.hypot(this.width, this.height) /2;
-  const alpha = math.atan2(this.width, this.height);
-  const x = this.x; -(this.width /2);
-  const y = this.y; -(this.height /2);
+  const alpha = math.atan2(this.height, this.width);
+  const x = this.x;
+  const y = this.y;
   
   const points = [
    {
@@ -179,7 +179,7 @@ struct('Car', {
   
   ctx.mapImage(image, this.polygon, (context, w, h) => {
    context.fillStyle = this.damaged ? 'black' : color;
-   context.fillRect(2, 2, w -2, h -2);
+   context.fillRect(0, 0, w, h);
   })
  },
 })
