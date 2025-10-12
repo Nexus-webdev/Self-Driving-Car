@@ -22,7 +22,7 @@ listener('keydown', e => {
  session.mutation = prompt('Set the rate of mutation', session.mutation);
  
  if (e.key == ' ')
- if (Game.gameFrame == 0) Game.start({ ls: false });
+ if (Game.paused) Game.start({ ls: false });
  else Game.stop();
 })
 
