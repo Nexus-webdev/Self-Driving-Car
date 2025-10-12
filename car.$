@@ -118,7 +118,7 @@ struct('Car', {
  
  createPolygon() {
   const rad = math.hypot(this.width, this.height) /2;
-  const alpha = math.atan2(this.height, this.width);
+  const alpha = math.atan2(this.width, this.height);
   const x = this.x;
   const y = this.y;
   
