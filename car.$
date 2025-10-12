@@ -177,10 +177,12 @@ struct('Car', {
   if (this.sensor && drawSensor)
   this.sensor.draw(ctx);
   
-  ctx.mapImage(image, this.polygon, (context, w, h) => {
-   context.fillStyle = this.damaged ? 'black' : color;
-   context.fillRect(0, 0, w, h);
-  })
+  ctx.beginPath();
+  ctx.fillStyle = this.damaged ? 'black' : color;
+  ctx.polygon(...this.polygon);
+  
+  ctx.fill();
+  ctx.stroke();
  },
 })
 
