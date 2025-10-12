@@ -3,6 +3,11 @@ const Game import `Sprout.Game`;
 
 const carImage = new Img();
 carImage.src = 'https://nexus-webdev.github.io/Self-Driving-Car/carImage.png';
+def mask = Game.ctx.mask((ctx, width, height, car) => {
+ ctx.fillStyle = car.damaged ? 'black' : car.color;
+ ctx.fillRect(0, 0, width, height);
+});
+
 struct('Car', {
  construct({ x = 0, y = 0, width = 30, height = 50, color = 'blue', controlType = 'DUMMY', maxSpeed = 3, acceleration = .18 } = {}) {
   def x = x;
@@ -28,10 +33,6 @@ struct('Car', {
   }
 
   def controls = new Controls(controlType);
-  def mask = Game.ctx.mask((ctx, width, height) => {
-   ctx.fillStyle = this.damaged ? 'black' : this.color;
-   ctx.fillRect(0, 0, width, height);
-  });
  },
  
  update(roadBorders, traffic, teacher) {
@@ -183,7 +184,7 @@ struct('Car', {
   this.sensor.draw(ctx);
   
   def color = color;
-  ctx.drawImg(carImage, this);
+  ctx.drawImg(carImage, { ...this, mask });
  },
 })
 
