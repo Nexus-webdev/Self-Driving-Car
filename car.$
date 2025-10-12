@@ -180,11 +180,16 @@ struct('Car', {
  },
  
  draw(ctx, color, drawSensor = false) {
+  if (color) def color = color;
   if (this.sensor && drawSensor)
   this.sensor.draw(ctx);
   
-  def color = color;
-  ctx.drawImg(carImage, { ...this, mask });
+  ctx.beginPath();
+  ctx.fillStyle = this.damaged ? 'black' : this.color;
+  ctx.polygon(...this.polygon);
+  ctx.fill();
+  
+  "ctx.drawImg(carImage, { ...this, mask })";
  },
 })
 
