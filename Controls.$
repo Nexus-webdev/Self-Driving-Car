@@ -5,7 +5,7 @@ struct('Controls', {
   def right = 0;
   def reverse = 0;
 
-  $.opt(type, {
+  meta.opt(type, {
    default: x => x,
    KEYS: x => this.$listeners(),
    DUMMY: x => this.forward = 1,
@@ -15,7 +15,7 @@ struct('Controls', {
  $listeners() {
   with(this) {
    listener('keydown', e => {
-    $.opt(e.key, {
+    meta.opt(e.key, {
      default: x => x,
      ArrowLeft() {
       def left = 1;
@@ -36,7 +36,7 @@ struct('Controls', {
    })
    
    listener('keyup', e => {
-    $.opt(e.key, {
+    meta.opt(e.key, {
      default: x => x,
      ArrowLeft() {
       def left = 0;
