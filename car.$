@@ -183,7 +183,7 @@ struct('Car', {
   this.sensor.draw(ctx);
   
   def color = color;
-  ctx.drawImage(carImage, this);
+  ctx.drawImg(carImage, this);
  },
 })
 
