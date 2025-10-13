@@ -4,6 +4,7 @@ session.traffic = session.traffic ?? 100;
 session.mutation = session.mutation ?? .06;
 cache['best'] = cache['best'] ?? '';
 cache['high-score'] = cache['high-score'] ?? '0';
+cache['gen-count'] = cache['gen-count'] ? Number(cache['gen-count']) +1 : '0';
 
 const mode = Number(session.mode) || 0;
 const file = cache['best'];
@@ -132,6 +133,7 @@ function save() {
 function discard() {
  cache['best'] = '';
  cache['high-score'] = '0';
+ delete cache['gen-count'];
 }
 
 function draw(ctx) {
@@ -157,6 +159,7 @@ function draw(ctx) {
 function logData() {
  terminal.clear();
  const arr = [
+  'Generation: ' +cache['gen-count'],
   'Cars Alive: ' +data.carsAlive,
   'Score: ' +best.score +(data.newhighscore ? '^' : ''),
   'Highscore: ' +data.highscore,
